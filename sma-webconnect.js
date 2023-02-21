@@ -16,9 +16,9 @@ module.exports = function (RED) {
       body,
       json: true,
       strictSSL: false,
-      timeout: 1500,
-      maxAttempts: 3,
-      retryDelay: 100
+      timeout: 5000,
+      maxAttempts: 2,
+      retryDelay: 300
     }, callback);
   }
 
@@ -65,8 +65,8 @@ module.exports = function (RED) {
     );
   }
 
-  function getValues(node, callback, onSessionTimeout) {
-    const url = buildUrl(node.use_tls, node.ip_address, "/dyn/getValues.json?sid=" + node.sid);
+  function getValues(node, callback, onSessionTimeout) { //Get All values at once
+    const url = buildUrl(node.use_tls, node.ip_address, "/dyn/getAllOnlValues.json?sid=" + node.sid);
 
     // set default message according to device type
     if (node.use_custom_config) {
@@ -83,8 +83,8 @@ module.exports = function (RED) {
     request(
       url,
       {
-        "destDev": [],
-        "keys": value_keys
+        "destDev": [] //,
+        //"keys": value_keys
       }, (error, response, body) => {
         node.debug("response to " + url + ": " + JSON.stringify(response));
 
